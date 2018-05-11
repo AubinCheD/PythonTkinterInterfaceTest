@@ -258,9 +258,9 @@ class Window(tk.Tk):  #faire hériter de Tk ????
         
         
         
-        spinboxEnfAfterGen = tk.Spinbox(panedWindowEndAfterGen, from_ = 0, to = 5000, variable = self.endAfterGen_value)
-        spinboxEnfAfterGen = tk.Spinbox(panedWindowEndAfterTime, from_ = 0, to = 5000, variable = self.endAfterTime_value)
-        spinboxEnfAfterGen = tk.Spinbox(panedWindowEndAfterValue, from_ = 0, to = 5000, variable = self.endAfterValue_value)
+        spinboxEndAfterGen = tk.Spinbox(panedWindowEndAfterGen, from_ = 0, to = 5000, textvariable = self.endAfterGen_value)
+        spinboxEndAfterTime = tk.Spinbox(panedWindowEndAfterTime, from_ = 0, to = 5000, textvariable = self.endAfterTime_value)
+        spinboxEndAfterValue = tk.Spinbox(panedWindowEndAfterValue, from_ = 0, to = 5000, textvariable = self.endAfterValue_value)
         
         
         panedWindowEndAfterGen.add(checkButtonEndAfterGen)
@@ -272,7 +272,7 @@ class Window(tk.Tk):  #faire hériter de Tk ????
         panedWindowEndAfterValue.add(checkButtonEndAfterValue)
         panedWindowEndAfterValue.add(spinboxEndAfterValue)
         
-        panedWindowEndAfterGenerations.grid()
+        panedWindowEndAfterGen.grid()
         panedWindowEndAfterTime.grid()
         panedWindowEndAfterValue.grid()
         
