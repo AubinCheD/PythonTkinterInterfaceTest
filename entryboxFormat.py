@@ -8,8 +8,8 @@ class Window(tk.Tk):
     
     def __init__(self):
         tk.Tk.__init__(self)
-        self.entry = EntryBoxFormated()
-        self.entry2 = EntryBoxFormated()
+        self.entry = EntryBoxFormated(self)
+        self.entry2 = EntryBoxFormated(self)
         
         self.entry.entryTkValue.set("0000.1111")
         
@@ -23,29 +23,37 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
     """(docstring) Classe Fenetre"""
     
 
-    def __init__ (self, min=None, max=None, precision=None, type=None):  #precision = nb digits after comma     
+    def __init__ (self, min=None, max=None, precision=None, type=None):  #precision = nb digits after comma       #??, window=None, 
                                                                 #type : "float" or "string", if string no need for validation
         if (min == None):
-            self.min = 0
+            self.min = 0.1
+        '''else:
+            self.min = min'''
         if (max == None):
             self.max = 10
+        '''else:
+            self.max = max'''
         if (precision == None):
             self.precision = 4
         if (type == None or type != 'string'):
-            self.type = "float" 
+            self.type = "float"
+        #self.root = window
         
         self.entryTkValue = self.initEntryValue()
         #self.entryTkValue = tk.StringVar(value="0000.0000")
         #self.entryTkTtkValue = tk.StringVar()
         
-        print(self.entryTkValue)
+        #print(self.entryTkValue)
         
+        super().__init__(textvariable = self.entryTkValue, text = self.entryTkValue, validate='focus')
         #super().register(self.entryFloatValidation)
-        #sup.register(self.entryFloatValidation)
-        
+        cmd = self.register(self.entryFloatValidation)
+        self.configure(validatecommand=cmd)
         
         #self.entryTk = tk.Entry(self, textvariable = self.entryTkValue, text = self.entryTkValue, validate=tk.ALL, validatecommand = {})
-        super().__init__(textvariable = self.entryTkValue, text = self.entryTkValue, validate=tk.ALL, validatecommand = self.register(self.entryFloatValidation) ) #, validatecommand = self.entryFloatValidation
+        #super().__init__(textvariable = self.entryTkValue, text = self.entryTkValue, validate=tk.ALL, validatecommand = self.register(self.entryFloatValidation) ) #, validatecommand = self.entryFloatValidation
+        
+        #super(EntryBoxFormated,self).__init__(textvariable = self.entryTkValue, text = self.entryTkValue, validate=tk.ALL, validatecommand = self.entryFloatValidation) 
         
         
         #self.entryTkTtk = tk.Entry(self, textvariable = self.entryTkTtkValue, text = self.entryTkTtkValue)
@@ -98,18 +106,19 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
                - s'il rentre "," instead of '.', change it
         
         """
+        for item in self.keys():
+            print(item)
+            print(self.cget(item))
+        
+        print('before   ' + self.cget('text'))
+        print('before' + self.get())
+        print('before' + self.entryTkValue.get())
         
         tempString = self.entryTkValue.get()
         n = len(tempString)
-        print(n)
         nbPoints = 0
         res = True
         i=0
-        
-        """for i in range (0,n):
-            if (string[i] < '0' and string[i] > '9'):
-                res = False
-          """  
             
         while (i<n):
             if (tempString[i] < '0' or tempString[i] > '9'):
@@ -122,14 +131,23 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
                         res = False
                 else:
                     res = False
+            i += 1
         
         if (res):
-            if (float(tempString) < self.min or float(tempString) > self.max):
+            """if (float(tempString) < self.min or float(tempString) > self.max):
                 res = False
             else:
                 self.delete(0,tk.END)
-                self.insert(0,tempString)
-            
+                self.insert(0,tempString)"""
+            self.delete(0,tk.END)
+            self.insert(0,tempString)
+        #print(self.entryTkValue.get())
+        #self.configure(text=self.entryTkValue)
+        #self.root.update()
+        
+        print('after' + self.get())
+        print('after' + self.entryTkValue.get())
+        
         return res
                 
                 
@@ -137,9 +155,36 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
 
 if (__name__ == '__main__'):
     
+    
     #print(tk.StringVar().configure())
     window = Window()    
     window.mainloop()
     window.quit()
     
     
+    '''
+    entry = EntryBoxFormated()
+    s1 = "hoho"
+    s2 = "1.121.1"
+    
+    s3 = s1
+    
+    print("get   " + entry.get())
+    
+    print(s3)
+    
+    print("before  " + entry.entryTkValue.get())
+    print("test result " + str(entry.entryFloatValidation()))
+    print("after  " + entry.entryTkValue.get())
+    entry.delete(0,tk.END)
+    entry.insert(0,s1)
+    entry.configure(text=s1)
+    entry.configure(text=s2)
+    #print("get   " + str(entry.select_range(0,tk.END)))
+    print("get   " + entry.get())
+    
+    print("before  " + entry.entryTkValue.get())
+    print("test result " + str(entry.entryFloatValidation()))
+    print("after  " + entry.entryTkValue.get())
+    
+    '''
