@@ -59,7 +59,50 @@ class EntryBoxFormated (tk.Entry):
                 self.insert(0,tempString)
 
         return res
-
+        
+        
+    def validation(string):
+        
+        """
+        Cas : - pas de "." dans la chaine, si c'est que des entiers c'est bon
+                - caractères non autorisés
+                - plus d'un point
+                - chaine correcte mais valeur en dehors de l'intervalle de valeur
+                - s'il rentre "," instead of '.', change it
+        
+        """
+        
+        tempString = self.entryTkValue.get()
+        n = len(tempString)
+        print(n)
+        nbPoints = 0
+        res = True
+        i=0
+            
+        while (i<n):
+            if (tempString[i] < '0' or tempString[i] > '9'):
+                if (tempString[i] == ',' or tempString[i] == ';'):
+                    tempString[i] == '.'
+    
+                if (tempString[i] == '.'):
+                    nbPoints += 1
+                    if (nbPoints > 1):
+                        res = False
+                else:
+                    res = False
+            i += 1
+        
+        if (res):
+            if (float(tempString) < self.min or float(tempString) > self.max):
+                res = False
+            else:
+                self.delete(0,tk.END)
+                self.insert(0,tempString)
+            
+        print(self.entryTkValue.get())
+        #self.configure(text=self.entryTkValue)
+        #self.root.update()
+        return res
 
 
 def validation(string):
@@ -107,6 +150,10 @@ def validation(string):
 
 
 if (__name__ == '__main__'):
-    window = Window()    
-    window.mainloop()
-    window.quit()
+    entry = EntryBoxFormated()
+    
+    
+    
+    #window = Window()    
+    #window.mainloop()
+    #window.quit()
