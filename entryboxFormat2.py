@@ -15,26 +15,26 @@ class Window(tk.Tk):
         
         self.entry.pack()
         self.entry2.pack()
-        
+
+#TO DO:  tenir compte des négatifs
+#        faire en sorte de selectionner le texte lorsque d'un appui sur tab
+
+
 class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE CE WIDGET ( min et max autorisés -> 2 attributs d'instance)
                                             # + une variable pour le nombre de chiffres après la virgule
                                             # ameliorer pour tenir compte des nombres négatifs ??
     #docstring
     """(docstring) Classe Fenetre"""
     
+                                                                #precision = nb digits after comma
+                                                                #type : "float" or "string", if string no need for validation  "not used now"
 
-    def __init__ (self, min=None, max=None, precision=None, type=None):  #precision = nb digits after comma       #??, window=None, 
-                                                                #type : "float" or "string", if string no need for validation
-        if (min == None):
-            self.min = 0.1
-        '''else:
-            self.min = min'''
-        if (max == None):
-            self.max = 10
-        '''else:
-            self.max = max'''
-        if (precision == None):
-            self.precision = 4
+    def __init__ (self, root, min=0.0, max=100., precision=3, type=None):  
+        self.min = min
+        self.max = max
+        self.precision = precision
+        self.root = root
+            
         if (type == None or type != 'string'):
             self.type = "float"
         #self.root = window
@@ -42,14 +42,10 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
         self.RealValue = self.initEntryValue()
         self.entryTkValue = self.RealValue
                 
-        super().__init__(textvariable = self.entryTkValue, text = self.entryTkValue, validate='focus')
+        super().__init__(self.root, textvariable = self.entryTkValue, text = self.entryTkValue, validate='focus')
         cmd = self.register(self.entryFloatValidation)
         self.configure(validatecommand=cmd)
         
-                                                        #when enter button pressed and entry is beeing focused
-        
-        #self.config(command=self.entryFloatValidation)
-        #self.bind('<Return>',self.entryFloatValidation())
         self.bind("<Return>", (lambda event: self.entryFloatValidation()))
         self.bind("<KP_Enter>", (lambda event: self.entryFloatValidation()))
 
@@ -76,15 +72,7 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
                - s'il rentre "," instead of '.', change it
         
         """
-        """for item in self.keys():
-            print(item)
-            print(self.cget(item))
-        """
-        """
-        print('before   ' + self.cget('text'))
-        print('before' + self.get())
-        print('before' + self.entryTkValue.get())
-        """
+
         tempString = self.entryTkValue.get()
         n = len(tempString)
         nbPoints = 0
@@ -104,36 +92,38 @@ class EntryBoxFormated (tk.Entry):          #PRENDRE UN INTERVALLE EN PARAM DE C
                     res = False
             i += 1
         
-        if (res):
-            """if (float(tempString) < self.min or float(tempString) > self.max):
+        if (res):                 #correct string, checking if min<value<max
+            if (float(tempString) < self.min or float(tempString) > self.max):
                 res = False
-            else:
-                self.delete(0,tk.END)
-                self.insert(0,tempString)"""
+        
+        if (res):                #string correct
+            i=0
+            test = True
+            while(test):
+                n = len(tempString)
+                if (i<(n-1) and tempString[i]=='0' and tempString[i+1]=='0'):
+                    tempString = tempString[1:]
+                else:
+                    test=False            
+
             self.RealValue = tempString
             self.delete(0,tk.END)
             self.insert(0,tempString)
-
         else:
             self.delete(0,tk.END)
             self.insert(0,self.RealValue)
-        #print(self.entryTkValue.get())
-        #self.configure(text=self.entryTkValue)
-        #self.root.update()
-        
-        print('after' + self.get())
-        print('after' + self.entryTkValue.get())
         
         return res
                 
     
     def onEnterKey(event=None):
         self.EntryFloatValidation()            
-    
-                
+
+
+
 
 if (__name__ == '__main__'):
-    
+
     #print(tk.StringVar().configure())
     window = Window()    
     window.mainloop()
